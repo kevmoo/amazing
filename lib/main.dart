@@ -1,6 +1,8 @@
+import 'dart:ui';
+
+import 'package:amazing/model/card.dart';
 import 'package:flutter/material.dart';
 
-import 'model/card.dart';
 import 'model/tile.dart';
 
 void main() {
@@ -51,16 +53,8 @@ class TileView extends StatelessWidget {
   final CardTile tile = randomTile();
 
   @override
-  Widget build(BuildContext context) => CustomPaint(
-        painter: _TilePainter(tile),
-        child: Center(
-          child: Text(
-            '${cardValues[tile.cardId]}',
-            textAlign: TextAlign.center,
-            textScaleFactor: 5,
-          ),
-        ),
-      );
+  Widget build(BuildContext context) =>
+      CustomPaint(painter: _TilePainter(tile));
 }
 
 final _grayPaint = Paint()..color = Colors.grey;
@@ -75,69 +69,56 @@ class _TilePainter extends CustomPainter {
     final smallestDimension =
         size.width < size.height ? size.width : size.height;
 
-    final quarter = smallestDimension / 4;
+    canvas.scale(smallestDimension / 4, smallestDimension / 4);
 
     canvas.drawRRect(
-      RRect.fromLTRBR(0, 0, smallestDimension, smallestDimension,
-          Radius.circular(smallestDimension / 6)),
+      RRect.fromLTRBR(0, 0, 4, 4, Radius.circular(1)),
       Paint()
         ..color = Colors.black
         ..style = PaintingStyle.stroke,
     );
 
     canvas.drawRect(
-      Rect.fromLTWH(
-        quarter,
-        quarter,
-        quarter * 3,
-        quarter * 2,
-      ),
+      Rect.fromLTWH(1, 1, 3, 2),
       _grayPaint,
     );
 
     switch (_tile.pathType) {
       case PathType.straight:
         canvas.drawRect(
-          Rect.fromLTWH(
-            0,
-            quarter,
-            quarter,
-            quarter * 2,
-          ),
+          Rect.fromLTWH(0, 1, 1, 2),
           _grayPaint,
         );
         break;
       case PathType.tee:
         canvas.drawRect(
-          Rect.fromLTWH(
-            0,
-            quarter,
-            quarter,
-            quarter * 2,
-          ),
+          Rect.fromLTWH(0, 1, 1, 2),
           _grayPaint,
         );
         canvas.drawRect(
-          Rect.fromLTWH(
-            quarter,
-            0,
-            quarter * 2,
-            quarter,
-          ),
+          Rect.fromLTWH(1, 0, 2, 1),
           _grayPaint,
         );
         break;
       case PathType.corner:
         canvas.drawRect(
-          Rect.fromLTWH(
-            quarter,
-            0,
-            quarter * 2,
-            quarter,
-          ),
+          Rect.fromLTWH(1, 0, 2, 1),
           _grayPaint,
         );
         break;
+    }
+
+    final tile = _tile;
+    if (tile is CardTile) {
+      final builder = ParagraphBuilder(ParagraphStyle(
+        textAlign: TextAlign.center,
+        fontSize: 1.5,
+      ));
+      builder.addText(cardValues[tile.cardId]);
+
+      final paragraph = builder.build()..layout(ParagraphConstraints(width: 4));
+
+      canvas.drawParagraph(paragraph, Offset(0, 0.5));
     }
   }
 
