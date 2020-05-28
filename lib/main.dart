@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:amazing/model/card.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
       ),
       home: Material(
         child: GridView.builder(
+          padding: EdgeInsets.all(20),
           itemCount: 49,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 7,
@@ -51,18 +53,18 @@ class MyApp extends StatelessWidget {
 
 class TileView extends StatelessWidget {
   final CardTile tile = randomTile();
+  final Rotation rotation = randomRotation();
 
   @override
   Widget build(BuildContext context) =>
-      CustomPaint(painter: _TilePainter(tile));
+      CustomPaint(painter: _TilePainter(tile, rotation));
 }
-
-final _grayPaint = Paint()..color = Colors.grey;
 
 class _TilePainter extends CustomPainter {
   final Tile _tile;
+  final Rotation _rotation;
 
-  _TilePainter(this._tile);
+  _TilePainter(this._tile, this._rotation);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -71,44 +73,16 @@ class _TilePainter extends CustomPainter {
 
     canvas.scale(smallestDimension / 4, smallestDimension / 4);
 
-    canvas.drawRRect(
-      RRect.fromLTRBR(0, 0, 4, 4, Radius.circular(1)),
-      Paint()
-        ..color = Colors.black
-        ..style = PaintingStyle.stroke,
-    );
-
-    canvas.drawRect(
-      Rect.fromLTWH(1, 1, 3, 2),
-      _grayPaint,
-    );
-
-    switch (_tile.pathType) {
-      case PathType.straight:
-        canvas.drawRect(
-          Rect.fromLTWH(0, 1, 1, 2),
-          _grayPaint,
-        );
-        break;
-      case PathType.tee:
-        canvas.drawRect(
-          Rect.fromLTWH(0, 1, 1, 2),
-          _grayPaint,
-        );
-        canvas.drawRect(
-          Rect.fromLTWH(1, 0, 2, 1),
-          _grayPaint,
-        );
-        break;
-      case PathType.corner:
-        canvas.drawRect(
-          Rect.fromLTWH(1, 0, 2, 1),
-          _grayPaint,
-        );
-        break;
-    }
+    canvas.translate(2, 2);
+    canvas.rotate(_radiansFromRotation(_rotation));
+    canvas.translate(-2, -2);
 
     final tile = _tile;
+    canvas.drawPath(
+      _pathFromPathType(tile.pathType),
+      _pathPaint,
+    );
+
     if (tile is CardTile) {
       final builder = ParagraphBuilder(ParagraphStyle(
         textAlign: TextAlign.center,
@@ -120,8 +94,73 @@ class _TilePainter extends CustomPainter {
 
       canvas.drawParagraph(paragraph, Offset(0, 0.5));
     }
+
+    canvas.drawRRect(
+      RRect.fromLTRBR(0, 0, 4, 4, Radius.circular(0.8)),
+      Paint()
+        ..color = Colors.grey
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.1,
+    );
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
+
+Path _pathFromPathType(PathType pathType) {
+  switch (pathType) {
+    case PathType.tee:
+      return _teePath;
+    case PathType.corner:
+      return _cornerPath;
+    case PathType.straight:
+      return _straightPath;
+    default:
+      throw UnimplementedError();
+  }
+}
+
+double _radiansFromRotation(Rotation r) {
+  switch (r) {
+    case Rotation.d0:
+      return 0;
+    case Rotation.d90:
+      return pi * 0.5;
+    case Rotation.d180:
+      return pi;
+    case Rotation.d270:
+      return pi * 1.5;
+    default:
+      throw UnimplementedError();
+  }
+}
+
+final _pathPaint = Paint()..color = Colors.brown.shade200;
+
+final _straightPath = Path()
+  ..moveTo(0, 1)
+  ..lineTo(4, 1)
+  ..lineTo(4, 3)
+  ..lineTo(0, 3)
+  ..close();
+
+final _teePath = Path()
+  ..moveTo(0, 1)
+  ..lineTo(1, 1)
+  ..lineTo(1, 0)
+  ..lineTo(3, 0)
+  ..lineTo(3, 1)
+  ..lineTo(4, 1)
+  ..lineTo(4, 3)
+  ..lineTo(0, 3)
+  ..close();
+
+final _cornerPath = Path()
+  ..moveTo(1, 0)
+  ..lineTo(3, 0)
+  ..lineTo(3, 1)
+  ..lineTo(4, 1)
+  ..lineTo(4, 3)
+  ..lineTo(1, 3)
+  ..close();

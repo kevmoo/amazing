@@ -14,12 +14,13 @@ import 'dart:math' show Random;
 
 final _rnd = Random();
 
-Tile randomTile() {
-  return CardTile(
-    PathType.values[_rnd.nextInt(PathType.values.length)],
-    _rnd.nextInt(CardTile.tileCount),
-  );
-}
+Tile randomTile() => CardTile(
+      PathType.values[_rnd.nextInt(PathType.values.length)],
+      _rnd.nextInt(CardTile.tileCount),
+    );
+
+Rotation randomRotation() =>
+    Rotation.values[_rnd.nextInt(Rotation.values.length)];
 
 class Tile {
   final PathType pathType;
@@ -55,4 +56,11 @@ enum Player {
   green,
   blue,
   yellow,
+}
+
+enum Rotation {
+  d0,
+  d90,
+  d180,
+  d270,
 }
