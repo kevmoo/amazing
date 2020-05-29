@@ -42,9 +42,7 @@ class Array2d<T> extends ListBase<T> {
   int get length => _source.length;
 
   @override
-  set length(int value) {
-    throw UnsupportedError('Not supported');
-  }
+  set length(int value) => throw UnsupportedError('Not supported');
 
   @override
   T operator [](int index) => _source[index];
