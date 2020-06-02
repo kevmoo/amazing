@@ -4,23 +4,11 @@
   - 10 corner
   - 6 corner w/ card
   - 6 "T" w/ card
-12 fixed tiles w/ card
+12 fixed "T" tiles w/ card
 4 corners
 
 50 tiles: 49 on the board + 1 floating
  */
-
-import 'dart:math' show Random;
-
-final _rnd = Random();
-
-Tile randomTile() => CardTile(
-      PathType.values[_rnd.nextInt(PathType.values.length)],
-      _rnd.nextInt(CardTile.tileCount),
-    );
-
-Rotation randomRotation() =>
-    Rotation.values[_rnd.nextInt(Rotation.values.length)];
 
 class Tile {
   final PathType pathType;
