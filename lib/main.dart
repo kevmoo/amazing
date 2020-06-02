@@ -78,15 +78,14 @@ class TileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => CustomPaint(
-        painter: _TilePainter(orientedTile.tile, orientedTile.rotation),
+        painter: _TilePainter(orientedTile),
       );
 }
 
 class _TilePainter extends CustomPainter {
-  final Tile _tile;
-  final Rotation _rotation;
+  final OrientedTile _otile;
 
-  _TilePainter(this._tile, this._rotation);
+  _TilePainter(this._otile);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -96,10 +95,10 @@ class _TilePainter extends CustomPainter {
     canvas
       ..scale(smallestDimension / 4, smallestDimension / 4)
       ..translate(2, 2)
-      ..rotate(_radiansFromRotation(_rotation))
+      ..rotate(_radiansFromRotation(_otile.rotation))
       ..translate(-2, -2);
 
-    final tile = _tile;
+    final tile = _otile.tile;
     canvas.drawPath(
       _pathFromPathType(tile.pathType),
       _pathPaint,
@@ -117,12 +116,18 @@ class _TilePainter extends CustomPainter {
         ..layout(const ParagraphConstraints(width: 4));
 
       canvas.drawParagraph(paragraph, const Offset(0, 0.5));
+    } else if (tile is StartTile) {
+      canvas.drawCircle(
+        const Offset(2, 2),
+        0.7,
+        Paint()..color = _playerColor(tile.player),
+      );
     }
 
     canvas.drawRRect(
       RRect.fromLTRBR(0, 0, 4, 4, const Radius.circular(0.8)),
       Paint()
-        ..color = Colors.grey
+        ..color = _otile.fixed ? Colors.black : Colors.grey
         ..style = PaintingStyle.stroke
         ..strokeWidth = 0.1,
     );
@@ -157,6 +162,21 @@ double _radiansFromRotation(Rotation r) {
       return pi * 1.5;
     default:
       throw UnimplementedError();
+  }
+}
+
+Color _playerColor(Player player) {
+  switch (player) {
+    case Player.blue:
+      return Colors.blue;
+    case Player.red:
+      return Colors.red;
+    case Player.green:
+      return Colors.green;
+    case Player.yellow:
+      return Colors.yellow;
+    default:
+      throw UnimplementedError(player.toString());
   }
 }
 

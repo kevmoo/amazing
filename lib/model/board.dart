@@ -14,10 +14,15 @@ final _rnd = Random();
 class OrientedTile {
   final Tile tile;
   final Rotation rotation;
+  final bool fixed;
 
-  OrientedTile(this.tile, [Rotation rotation])
-      : rotation =
-            rotation ?? Rotation.values[_rnd.nextInt(Rotation.values.length)];
+  OrientedTile(
+    this.tile, {
+    Rotation rotation,
+    bool fixed,
+  })  : rotation =
+            rotation ?? Rotation.values[_rnd.nextInt(Rotation.values.length)],
+        fixed = fixed ?? (rotation != null);
 }
 
 Board randomBoard() {
@@ -42,24 +47,24 @@ Board randomBoard() {
     // Row 1
     OrientedTile(
       StartTile(Player.blue),
-      Rotation.d90,
+      rotation: Rotation.d90,
     ),
 
     movingTiles.removeLast(),
     OrientedTile(
       CardTile(PathType.tee, cardIndex++),
-      Rotation.d180,
+      rotation: Rotation.d180,
     ),
     movingTiles.removeLast(),
     OrientedTile(
       CardTile(PathType.tee, cardIndex++),
-      Rotation.d180,
+      rotation: Rotation.d180,
     ),
     movingTiles.removeLast(),
 
     OrientedTile(
       StartTile(Player.red),
-      Rotation.d180,
+      rotation: Rotation.d180,
     ),
 
     // Row 2
@@ -68,25 +73,25 @@ Board randomBoard() {
     // Row 3
     OrientedTile(
       CardTile(PathType.tee, cardIndex++),
-      Rotation.d90,
+      rotation: Rotation.d90,
     ),
 
     movingTiles.removeLast(),
     OrientedTile(
       CardTile(PathType.tee, cardIndex++),
-      Rotation.d180,
+      rotation: Rotation.d180,
     ),
 
     movingTiles.removeLast(),
     OrientedTile(
       CardTile(PathType.tee, cardIndex++),
-      Rotation.d270,
+      rotation: Rotation.d270,
     ),
 
     movingTiles.removeLast(),
     OrientedTile(
       CardTile(PathType.tee, cardIndex++),
-      Rotation.d270,
+      rotation: Rotation.d270,
     ),
 
     // Row 4
@@ -95,25 +100,25 @@ Board randomBoard() {
     // Row 5
     OrientedTile(
       CardTile(PathType.tee, cardIndex++),
-      Rotation.d90,
+      rotation: Rotation.d90,
     ),
 
     movingTiles.removeLast(),
     OrientedTile(
       CardTile(PathType.tee, cardIndex++),
-      Rotation.d90,
+      rotation: Rotation.d90,
     ),
 
     movingTiles.removeLast(),
     OrientedTile(
       CardTile(PathType.tee, cardIndex++),
-      Rotation.d0,
+      rotation: Rotation.d0,
     ),
 
     movingTiles.removeLast(),
     OrientedTile(
       CardTile(PathType.tee, cardIndex++),
-      Rotation.d270,
+      rotation: Rotation.d270,
     ),
 
     // Row 6
@@ -123,24 +128,24 @@ Board randomBoard() {
 
     OrientedTile(
       StartTile(Player.yellow),
-      Rotation.d0,
+      rotation: Rotation.d0,
     ),
 
     movingTiles.removeLast(),
     OrientedTile(
       CardTile(PathType.tee, cardIndex++),
-      Rotation.d0,
+      rotation: Rotation.d0,
     ),
     movingTiles.removeLast(),
     OrientedTile(
       CardTile(PathType.tee, cardIndex++),
-      Rotation.d0,
+      rotation: Rotation.d0,
     ),
     movingTiles.removeLast(),
 
     OrientedTile(
       StartTile(Player.green),
-      Rotation.d270,
+      rotation: Rotation.d270,
     ),
   ];
 
