@@ -152,18 +152,18 @@ Board randomBoard() {
   assert(movingTiles.length == 1);
   assert(fixedTiles.length == 49);
 
-  return Board(
-    Array2d.readonlyFrom(boardSize, fixedTiles),
-  );
+  return Board(fixedTiles, movingTiles.single.tile);
 }
 
 class Board {
+  final Tile remainingTile;
   final Array2d<OrientedTile> array;
 
-  Board(this.array)
-      : assert(array.width == boardSize),
-        assert(array.height == boardSize),
-        assert(_validBoard(array));
+  Board(List<OrientedTile> boardTiles, this.remainingTile)
+      : assert(boardTiles.length == boardSize * boardSize),
+        array = Array2d.readonlyFrom(boardSize, boardTiles) {
+    assert(_validBoard(array));
+  }
 }
 
 bool _validBoard(Iterable<OrientedTile> values) {
