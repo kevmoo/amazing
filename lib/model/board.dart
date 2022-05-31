@@ -18,8 +18,8 @@ class OrientedTile {
 
   OrientedTile(
     this.tile, {
-    Rotation rotation,
-    bool fixed,
+    Rotation? rotation,
+    bool? fixed,
   })  : rotation =
             rotation ?? Rotation.values[_rnd.nextInt(Rotation.values.length)],
         fixed = fixed ?? (rotation != null);
