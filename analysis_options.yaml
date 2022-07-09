@@ -1,4 +1,4 @@
-include: package:pedantic/analysis_options.yaml
+include: package:lints/recommended.yaml
 
 analyzer:
   strong-mode:
@@ -95,5 +95,6 @@ linter:
     - unnecessary_string_interpolations
     - use_setters_to_change_properties
     - use_string_buffers
+    - use_super_parameters
     - use_to_and_as_if_applicable
     - void_checks

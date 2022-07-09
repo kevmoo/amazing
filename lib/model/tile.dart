@@ -27,10 +27,9 @@ class CardTile extends Tile {
 
   final int cardId;
 
-  CardTile(PathType pathType, this.cardId)
+  CardTile(super.pathType, this.cardId)
       : assert(cardId >= 0),
-        assert(cardId < tileCount),
-        super(pathType);
+        assert(cardId < tileCount);
 }
 
 enum PathType {
